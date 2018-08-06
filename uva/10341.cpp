@@ -14,8 +14,8 @@ int main(){
         }
         
         lo=0.0; hi=1.0;
-        
-        for(int i=0;i<30;i++){
+        int cnt = 100;
+        while (cnt--) {
             mi=(lo+hi)/2;
             
             f=p*exp(-mi)+q*sin(mi)+r*cos(mi)+s*tan(mi)+t*mi*mi+u;
