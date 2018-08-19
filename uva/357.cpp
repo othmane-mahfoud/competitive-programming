@@ -25,3 +25,5 @@ int main()
             cout << "There are " << ways[cents] << " ways to produce " << cents << " cents change.\n";
     }
 }
+
+//Othmane Mahfoud
