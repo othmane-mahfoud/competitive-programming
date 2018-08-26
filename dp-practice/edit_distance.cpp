@@ -1,41 +1,70 @@
-#include <iostream>
-#include <vector>
-#include <cmath>
-#include <string>
+#include<iostream>
+#include<string>
 
 using namespace std;
 
-int min(int x, int y, int z){
-    return min(min(x, y), z);
-}
-
-int editDistance(string word1, string word2){
-    int i, j, l1, l2, m;
-    l1 = word1.length();
-    l2 = word2.length();
-    vector< vector<int> > t(l1 + 1, vector<int>(l2 + 1));
+int minEditDistance(string src, string dest, int len1, int len2)
+{
+    int i, j;
     
-    for (i = 0; i <= l1; i++)
-        t[i][0] = i;
-    for (i = 1; i <= l2; i++)
-        t[0][i] = i;
+    //create a matrix of order (len1+1)*(len2+1) to memoize values
+    int edit[len1+1][len2+1];
     
-    for (i = 1; i <= l1; i++){
-        for (j = 1; j <= l2; j++){
-            t[i][j] = min(t[i-1][j], //Delete
-                          t[i][j-1] + 1, //Insert
-                          t[i-1][j-1] + (word1[i-1] == word2[j-1] ? 0 : 1) //Copy or Replace
-            );
+    //edit[i][j]=minimum number of edit operations required to transform src[0....(i-1)] to dest[0...(j-1)]
+    
+    //initializing
+    for(i=0;i<=len1;i++)
+        edit[i][0]=i;    //min operations required to transform src[0...i-1] to empty dest string
+    
+    for(j=0;j<=len2;j++)
+        edit[0][j]=j;   //min operations required to transform empty src to dest[0...j-1]
+    
+    //now, start filling the matrix row wise
+    for(i=1;i<=len1;i++)
+    {
+        for(j=1;j<=len2;j++)
+        {
+            //if current character of both strings match
+            if(src[i-1]==dest[j-1])
+            {
+                edit[i][j]=edit[i-1][j-1];
+            }
+            
+            //mismatch
+            else
+            {
+                //try applying all operations and choose the one which costs minimum
+                int x=1+edit[i-1][j];    //delete
+                int y=1+edit[i][j-1];    //insert
+                int z=1+edit[i-1][j-1];  //replace
+                
+                edit[i][j]=min(x,min(y,z));
+                
+            }
         }
     }
-    return t[l1][l2];
+    
+    //now, return the final value
+    return edit[len1][len2];
+    
 }
 
-int main(){
-    string str1 = "othmane";
-    string str2 = "imane";
+
+int main()
+{
+    string src,dest;
     
-    cout << editDistance(str1, str2) << endl;
+    cout<<"Enter source string   ";
+    getline(cin, src);
     
+    cout<<"Enter destination string   ";
+    getline(cin, dest);
+    
+    int len1=src.length();  //length of src string
+    int len2=dest.length(); //length of dest string
+    
+    cout<<"Minimum number of edit operations required for transforming \nsource string to destination string is "<<minEditDistance(src,dest,len1,len2);
+    
+    cout<<endl;
     return 0;
 }

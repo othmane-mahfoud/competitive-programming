@@ -1,6 +1,4 @@
-#include <iostream>
-#include <cstdio>
-#include <cstring>
+#include <bits/stdc++>
 
 using namespace std;
 
