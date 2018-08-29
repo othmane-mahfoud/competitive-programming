@@ -71,6 +71,18 @@ map<int, int> factor(int N) {
     return factors;
 }
 
+//Base conversion
+
+vector<int> toBase(int base, int val) {
+    vector<int> res;
+    while(val != 0) {
+        res.push_back(val % base);
+        val = floor((double)val/(double)base);
+    }
+    reverse(res.begin(), res.end());
+    return res;
+}
+
 int main(){
     
     // variables declarations
