@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 
+#define MAXN 1000
+
 using namespace std;
 
 // data types defs
@@ -49,6 +51,43 @@ bool parallel(line a, line b) {
     return abs(cross(a.second - a.first, b.second - b.first)) < EPS; 
 }
 
+point closest_point(line l, point p, bool segment = false) {
+    if (segment) {
+        if (dot(l.second - l.first, p - l.second) > 0) return l.second;
+        if (dot(l.first - l.second, p - l.first) > 0) return l.first;
+    }
+    double t = dot(p - l.first, l.second - l.first) / norm(l.second - l.first);
+    return l.first + t * (l.second - l.first);
+}
+
+// convex hull
+point hull[MAXN];
+
+bool cmp(const point &a, const point &b) {
+    return abs(real(a) - real(b)) > EPS ? real(a) < real(b) : imag(a) < imag(b);
+}
+
+int convex_hull(vector<point> p) {
+    int n = p.size(), l = 0;
+    sort(p.begin(), p.end(), cmp);
+    for (int i = 0; i < n; i++) {
+        if (i > 0 && p[i] == p[i - 1])
+            continue;
+        while (l >= 2 && ccw(hull[l - 2], hull[l - 1], p[i]) >= 0)
+            l--;
+        hull[l++] = p[i];
+    }
+    int r = l;
+    for (int i = n - 2; i >= 0; i--) {
+        if (p[i] == p[i + 1])
+            continue;
+        while (r - l >= 1 && ccw(hull[r - 2], hull[r - 1], p[i]) >= 0)
+            r--;
+        hull[r++] = p[i];
+    }
+    return l == 1 ? 1 : r - 1;
+}
+
 int main(){
     point p(0, 1);
     point q(1, 0);
@@ -79,7 +118,7 @@ int main(){
     cout << angle(P, Q, R) << endl;
     cout << cross(P - Q, R - Q) << endl;
     
-    // Area shit
+    // points to test polygon/triangle area
     point A(3.0, 1.0);
     point B(0.0, 0.0);
     point C(3.0, 0.0);
@@ -104,5 +143,32 @@ int main(){
     else
     	cout << "clockwise" << endl;
 
+    // checking closest point on a line to point
+    line l = make_pair(P, Q);
+    point test(0.7, 0.2);
+    point closest = closest_point(l, test, false);
+    cout << "closest point is: (" << real(closest) << ", " << imag(closest) << ")" << endl;
+    
+    
+    // testing convex hull func
+    point p1(0, 3);
+    point p2(2, 2);
+    point p3(1, 1);
+    point p4(2, 1);
+    point p5(3, 0);
+    point p6(0, 0);
+    point p7(3, 3);
+    
+    vector<point> ch;
+    
+    ch.push_back(p1);
+    ch.push_back(p2);
+    ch.push_back(p3);
+    ch.push_back(p4);
+    ch.push_back(p5);
+    ch.push_back(p6);
+    ch.push_back(p7);
+    
+    cout << convex_hull(ch) << endl;
 
 }
