@@ -44,7 +44,7 @@ int main(){
             dp[i][j] = -1;
         }
     }
-    cout << "Travelling Saleman Distance is " << tsp(1,0) << endl;
+    cout << "Travelling Salesman Distance is " << tsp(1,0) << endl;
     
     return 0;
 }
